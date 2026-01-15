@@ -5,7 +5,7 @@ import { Login } from "./pages/login";
 import { New } from "./pages/dashboard/new";
 import { Dashboard } from "./pages/dashboard";
 import { Detail } from "./pages/car";
-import { Layout } from "./pages/components/layout";
+import { Layout } from "./components/layout";
 
 
 const router = createBrowserRouter([
