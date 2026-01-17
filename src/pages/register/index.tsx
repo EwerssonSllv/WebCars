@@ -1,11 +1,12 @@
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import logoImg from '../../assets/logo.svg'
 import { Container } from '../../components/container'
 import { Input } from '../../components/input'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import toast from 'react-hot-toast'
+import { logoutUser, register as registerUser } from '../../services/authService'
+import { useEffect } from 'react'
 
 const schema = z.object({
     name: z.string().nonempty("Name is required!"),
@@ -16,14 +17,27 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export function Register() {
+    const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
 
-    function onSubmit(data: FormData) {
-        toast.success("Registered successfully!")
-        console.log(data)
+    useEffect(() => {
+        async function handleLogOut(){
+            await logoutUser()
+        }
+
+        handleLogOut()
+    }, [])
+
+    async function onSubmit(data: FormData) {
+        try {
+            await registerUser(data.email, data.password, data.name);
+            navigate("/dashboard", { replace:true })
+        } catch (error) {
+            console.error("Erro ao registrar", error);
+        }
     }
 
     return (
